@@ -1,0 +1,42 @@
+### Get all books
+GET http://localhost:3000/books
+
+
+### Create a new book
+POST http://localhost:3000/books
+Content-Type: application/json
+
+{
+  "name": "Test Book From REST",
+  "author": "Megan",
+  "description": "Created during API testing",
+  "price": 15.55,
+  "image": "https://example.com/book.jpg"
+}
+
+
+### Update a book
+PUT http://localhost:3000/books/PASTE_ID_HERE
+Content-Type: application/json
+
+{
+  "id": "PASTE_ID_HERE",
+  "name": "Updated Test Book",
+  "author": "Megan",
+  "description": "Updated during API testing",
+  "price": 20.00,
+  "image": "https://example.com/book2.jpg"
+}
+
+
+### Delete a book 
+DELETE http://localhost:3000/books/PASTE_ID_HERE
+
+
+### Invalid input 
+POST http://localhost:3000/books
+Content-Type: application/json
+
+{
+  "name": ""
+}
