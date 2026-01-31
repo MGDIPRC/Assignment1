@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start-server": "ts-node src/server.ts",
-        "lint": "eslingt .",
+        "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "fmt": "prettier . --write",
         "fmt:check": "prettier . --check",
