@@ -4,24 +4,31 @@ import books from '../../mcmasterful-book-list.json'
 
 const listRouter = new Router()
 
-listRouter.get('/books', async (ctx) => {
-  const filters = ctx.query.filters as
-    | Array<{ from?: string, to?: string }>
-    | undefined
+listRouter.get('/books', async (ctx): Promise<void> => {
+  const filtersRaw = ctx.query.filters
+
+  const filters =
+    Array.isArray(filtersRaw) && filtersRaw.length > 0
+      ? (filtersRaw as Array<{ from?: string; to?: string }>)
+      : undefined
 
   try {
     const bookList = readBooksFromJsonData()
 
-    // Todo: Uncomment to Apply filters
-    // if (filters && Array.isArray(filters) && filters.length > 0) {
-    //   if (!validateFilters(filters)) {
-    //     ctx.status = 400;
-    //     ctx.body = { error: 'Invalid filters. Each filter must have valid "from" and "to" numbers where from <= to.' };
-    //     return;
-    //   }
+    if (filters !== undefined) {
+      if (!validateFilters(filters)) {
+        ctx.status = 400
+        ctx.body = {
+          error:
+            'Invalid filters. Each filter must have valid "from" and "to" numbers where from <= to.'
+        }
+        return
+      }
 
-    //   bookList = filterBooks(bookList, filters);
-    // }
+      ctx.body = filterBooks(bookList, filters)
+      return
+    }
+
 
     ctx.body = bookList
   } catch (error) {
@@ -30,7 +37,9 @@ listRouter.get('/books', async (ctx) => {
   }
 })
 
-function validateFilters (filters: any): boolean {
+function validateFilters(
+  filters: Array<{ from?: string; to?: string }>
+): boolean {
   // Check if filters exist and are an array
   if (!filters || !Array.isArray(filters)) {
     return false
@@ -60,12 +69,12 @@ function validateFilters (filters: any): boolean {
   })
 }
 
-function readBooksFromJsonData (): Book[] {
+function readBooksFromJsonData(): Book[] {
   return books as Book[]
 }
 
 // Filter books by price range - a book matches if it falls within ANY of the filter ranges
-function filterBooks (
+function filterBooks(
   bookList: Book[],
   filters: Array<{ from?: string, to?: string }>
 ): Book[] {
