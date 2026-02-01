@@ -12,4 +12,4 @@ const BookSchema = new Schema(
 )
 
 export const BookModel =
-  mongoose.models.Book || mongoose.model('Book', BookSchema)
+  mongoose.models.Book ?? mongoose.model('Book', BookSchema)

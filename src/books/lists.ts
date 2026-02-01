@@ -36,7 +36,7 @@ listRouter.get('/books', async (ctx): Promise<void> => {
   }
 })
 
-function validateFilters(
+function validateFilters (
   filters: Array<{ from?: string, to?: string }>
 ): boolean {
   return filters.every((filter) => {
@@ -61,12 +61,12 @@ function validateFilters(
   })
 }
 
-function readBooksFromJsonData(): Book[] {
+function readBooksFromJsonData (): Book[] {
   return books as Book[]
 }
 
 // Filter books by price range - a book matches if it falls within ANY of the filter ranges
-function filterBooks(
+function filterBooks (
   bookList: Book[],
   filters: Array<{ from?: string, to?: string }>
 ): Book[] {
