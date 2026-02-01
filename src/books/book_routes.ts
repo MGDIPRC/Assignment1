@@ -1,6 +1,9 @@
 import Router from '@koa/router'
+import type Koa from 'koa'
 import listRouter from './lists'
 import assignment from '../../adapter/assignment-2'
+import type { Book } from '../../adapter/assignment-2'
+
 
 const router = new Router()
 
@@ -8,19 +11,39 @@ const router = new Router()
 router.use(listRouter.routes())
 router.use(listRouter.allowedMethods())
 
-function handleError (ctx: any, err: any) {
-  const message = err?.message || 'Something went wrong'
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message
+  if (typeof err === 'string') return err
+  return 'Something went wrong'
+}
+
+function isBook(value: unknown): value is Book {
+  if (typeof value !== 'object' || value === null) return false
+  const v = value as Record<string, unknown>
+
+  return (
+    typeof v.name === 'string' &&
+    typeof v.author === 'string' &&
+    typeof v.description === 'string' &&
+    typeof v.price === 'number' &&
+    typeof v.image === 'string'
+  )
+}
+
+function handleError(ctx: Koa.Context, err: unknown): void {
+  const message = getErrorMessage(err)
+  const messageLower = message.toLowerCase()
 
   if (
-    message.toLowerCase().includes("can't find") ||
-    message.toLowerCase().includes("couldn't find")
+    messageLower.includes("can't find") ||
+    messageLower.includes("couldn't find")
   ) {
     ctx.status = 404
   } else if (
-    message.toLowerCase().includes('need') ||
-    message.toLowerCase().includes('please') ||
-    message.toLowerCase().includes("doesn't look right") ||
-    message.toLowerCase().includes('no book')
+    messageLower.includes('need') ||
+    messageLower.includes('please') ||
+    messageLower.includes("doesn't look right") ||
+    messageLower.includes('no book')
   ) {
     ctx.status = 400
   } else {
@@ -33,8 +56,15 @@ function handleError (ctx: any, err: any) {
 // Create book route
 router.post('/books', async (ctx) => {
   try {
-    const book = ctx.request.body as any
-    const id = await assignment.createOrUpdateBook(book)
+    const payload: unknown = ctx.request.body
+
+    if (!isBook(payload)) {
+      ctx.status = 400
+      ctx.body = { error: 'Invalid book payload' }
+      return
+    }
+
+    const id = await assignment.createOrUpdateBook(payload)
     ctx.status = 201
     ctx.body = { id }
   } catch (err) {
@@ -45,9 +75,27 @@ router.post('/books', async (ctx) => {
 // Update book route
 router.put('/books/:id', async (ctx) => {
   try {
-    const id = ctx.params.id
-    const book = { ...(ctx.request.body as any), id }
-    const updatedId = await assignment.createOrUpdateBook(book)
+    const idParam: unknown = ctx.params.id
+
+    if (typeof idParam !== 'string' || idParam.trim() === '') {
+      ctx.status = 400
+      ctx.body = { error: 'Missing book id' }
+      return
+    }
+
+    const payload: unknown = ctx.request.body
+    const merged: unknown =
+      typeof payload === 'object' && payload !== null
+        ? { ...(payload as Record<string, unknown>), id: idParam }
+        : { id: idParam }
+
+    if (!isBook(merged)) {
+      ctx.status = 400
+      ctx.body = { error: 'Invalid book payload' }
+      return
+    }
+
+    const updatedId = await assignment.createOrUpdateBook(merged)
     ctx.status = 200
     ctx.body = { id: updatedId }
   } catch (err) {
@@ -58,8 +106,15 @@ router.put('/books/:id', async (ctx) => {
 // Delete book route
 router.delete('/books/:id', async (ctx) => {
   try {
-    const id = ctx.params.id
-    await assignment.removeBook(id)
+    const idParam: unknown = ctx.params.id
+
+    if (typeof idParam !== 'string' || idParam.trim() === '') {
+      ctx.status = 400
+      ctx.body = { error: 'Missing book id' }
+      return
+    }
+
+    await assignment.removeBook(idParam)
     ctx.status = 204
   } catch (err) {
     handleError(ctx, err)

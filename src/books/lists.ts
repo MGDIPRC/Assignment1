@@ -32,48 +32,41 @@ listRouter.get('/books', async (ctx): Promise<void> => {
     ctx.body = bookList
   } catch (error) {
     ctx.status = 500
-    ctx.body = { error: `Failed to fetch books due to: ${error}` }
+    ctx.body = { error: `Failed to fetch books due to: ${String(error)}` }
   }
 })
 
-function validateFilters (
+function validateFilters(
   filters: Array<{ from?: string, to?: string }>
 ): boolean {
-  // Check if filters exist and are an array
-  if (!filters || !Array.isArray(filters)) {
-    return false
-  }
-
-  // Check each filter object in the array
   return filters.every((filter) => {
-    const from = filter.from !== undefined ? parseFloat(filter.from) : undefined
-    const to = filter.to !== undefined ? parseFloat(filter.to) : undefined
+    const fromRaw = filter.from
+    const toRaw = filter.to
 
-    // If from is provided, it must be a valid number
-    if (from !== undefined && isNaN(from)) {
-      return false
-    }
+    const from =
+      typeof fromRaw === 'string' && fromRaw.trim() !== ''
+        ? Number(fromRaw)
+        : undefined
 
-    // If to is provided, it must be a valid number
-    if (to !== undefined && isNaN(to)) {
-      return false
-    }
+    const to =
+      typeof toRaw === 'string' && toRaw.trim() !== ''
+        ? Number(toRaw)
+        : undefined
 
-    // If both are provided, from must be <= to
-    if (from !== undefined && to !== undefined && from > to) {
-      return false
-    }
+    if (from !== undefined && Number.isNaN(from)) return false
+    if (to !== undefined && Number.isNaN(to)) return false
+    if (from !== undefined && to !== undefined && from > to) return false
 
     return true
   })
 }
 
-function readBooksFromJsonData (): Book[] {
+function readBooksFromJsonData(): Book[] {
   return books as Book[]
 }
 
 // Filter books by price range - a book matches if it falls within ANY of the filter ranges
-function filterBooks (
+function filterBooks(
   bookList: Book[],
   filters: Array<{ from?: string, to?: string }>
 ): Book[] {
