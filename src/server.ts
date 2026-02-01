@@ -1,29 +1,28 @@
-import Koa from 'koa';
-import cors from '@koa/cors';
-import bodyParser from 'koa-bodyparser';
-import qs from 'koa-qs';
-import bookRoutes from './books/book_routes';
-import { connectToDatabase } from "./db";
+import Koa from 'koa'
+import cors from '@koa/cors'
+import bodyParser from 'koa-bodyparser'
+import qs from 'koa-qs'
+import bookRoutes from './books/book_routes'
+import { connectToDatabase } from './db'
 
-const app = new Koa();
-qs(app);
+const app = new Koa()
+qs(app)
 
-app.use(cors());
-app.use(bodyParser());
-app.use(bookRoutes.allowedMethods());
-app.use(bookRoutes.routes());
+app.use(cors())
+app.use(bodyParser())
+app.use(bookRoutes.allowedMethods())
+app.use(bookRoutes.routes())
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000
 
 connectToDatabase()
-    .then(() => {
-        app.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`);
-        });
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`)
     })
-    .catch((err) => {
-        console.error("Failed to start server (DB connection failed).");
-        console.error(err);
-        process.exit(1);
-    });
-;
+  })
+  .catch((err) => {
+    console.error('Failed to start server (DB connection failed).')
+    console.error(err)
+    process.exit(1)
+  })

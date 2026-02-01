@@ -1,14 +1,16 @@
-import Router from '@koa/router';
-import { Book } from '../../adapter/assignment-1';
-import books from '../../mcmasterful-book-list.json';
+import Router from '@koa/router'
+import { type Book } from '../../adapter/assignment-1'
+import books from '../../mcmasterful-book-list.json'
 
-const listRouter = new Router();
+const listRouter = new Router()
 
 listRouter.get('/books', async (ctx) => {
-  const filters = ctx.query.filters as Array<{ from?: string, to?: string }> | undefined;
+  const filters = ctx.query.filters as
+    | Array<{ from?: string, to?: string }>
+    | undefined
 
   try {
-    let bookList = readBooksFromJsonData();
+    const bookList = readBooksFromJsonData()
 
     // Todo: Uncomment to Apply filters
     // if (filters && Array.isArray(filters) && filters.length > 0) {
@@ -21,60 +23,64 @@ listRouter.get('/books', async (ctx) => {
     //   bookList = filterBooks(bookList, filters);
     // }
 
-    ctx.body = bookList;
+    ctx.body = bookList
   } catch (error) {
-    ctx.status = 500;
-    ctx.body = { error: `Failed to fetch books due to: ${error}` };
+    ctx.status = 500
+    ctx.body = { error: `Failed to fetch books due to: ${error}` }
   }
-});
+})
 
-function validateFilters(filters: any): boolean {
+function validateFilters (filters: any): boolean {
   // Check if filters exist and are an array
   if (!filters || !Array.isArray(filters)) {
-    return false;
+    return false
   }
 
   // Check each filter object in the array
-  return filters.every(filter => {
-    const from = filter.from !== undefined ? parseFloat(filter.from) : undefined;
-    const to = filter.to !== undefined ? parseFloat(filter.to) : undefined;
+  return filters.every((filter) => {
+    const from = filter.from !== undefined ? parseFloat(filter.from) : undefined
+    const to = filter.to !== undefined ? parseFloat(filter.to) : undefined
 
     // If from is provided, it must be a valid number
     if (from !== undefined && isNaN(from)) {
-      return false;
+      return false
     }
 
     // If to is provided, it must be a valid number
     if (to !== undefined && isNaN(to)) {
-      return false;
+      return false
     }
 
     // If both are provided, from must be <= to
     if (from !== undefined && to !== undefined && from > to) {
-      return false;
+      return false
     }
 
-    return true;
-  });
+    return true
+  })
 }
 
-function readBooksFromJsonData(): Book[] {
-  return books as Book[];
+function readBooksFromJsonData (): Book[] {
+  return books as Book[]
 }
 
 // Filter books by price range - a book matches if it falls within ANY of the filter ranges
-function filterBooks(bookList: Book[], filters: Array<{ from?: string, to?: string }>): Book[] {
-  return bookList.filter(book =>
-    filters.some(filter => {
-      const from = filter.from !== undefined ? parseFloat(filter.from) : undefined;
-      const to = filter.to !== undefined ? parseFloat(filter.to) : undefined;
+function filterBooks (
+  bookList: Book[],
+  filters: Array<{ from?: string, to?: string }>
+): Book[] {
+  return bookList.filter((book) =>
+    filters.some((filter) => {
+      const from =
+        filter.from !== undefined ? parseFloat(filter.from) : undefined
+      const to = filter.to !== undefined ? parseFloat(filter.to) : undefined
 
-      const matchesFrom = from === undefined || book.price >= from;
-      const matchesTo = to === undefined || book.price <= to;
+      const matchesFrom = from === undefined || book.price >= from
+      const matchesTo = to === undefined || book.price <= to
 
-      return matchesFrom && matchesTo;
+      return matchesFrom && matchesTo
     })
-  );
+  )
 }
 
-export default listRouter;
+export default listRouter
