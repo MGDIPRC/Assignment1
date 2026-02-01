@@ -9,7 +9,7 @@ listRouter.get('/books', async (ctx): Promise<void> => {
 
   const filters =
     Array.isArray(filtersRaw) && filtersRaw.length > 0
-      ? (filtersRaw as Array<{ from?: string; to?: string }>)
+      ? (filtersRaw as Array<{ from?: string, to?: string }>)
       : undefined
 
   try {
@@ -29,7 +29,6 @@ listRouter.get('/books', async (ctx): Promise<void> => {
       return
     }
 
-
     ctx.body = bookList
   } catch (error) {
     ctx.status = 500
@@ -37,8 +36,8 @@ listRouter.get('/books', async (ctx): Promise<void> => {
   }
 })
 
-function validateFilters(
-  filters: Array<{ from?: string; to?: string }>
+function validateFilters (
+  filters: Array<{ from?: string, to?: string }>
 ): boolean {
   // Check if filters exist and are an array
   if (!filters || !Array.isArray(filters)) {
@@ -69,12 +68,12 @@ function validateFilters(
   })
 }
 
-function readBooksFromJsonData(): Book[] {
+function readBooksFromJsonData (): Book[] {
   return books as Book[]
 }
 
 // Filter books by price range - a book matches if it falls within ANY of the filter ranges
-function filterBooks(
+function filterBooks (
   bookList: Book[],
   filters: Array<{ from?: string, to?: string }>
 ): Book[] {

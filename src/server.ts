@@ -8,17 +8,24 @@ import { connectToDatabase } from './db'
 const app = new Koa()
 qs(app)
 
+const portRaw = process.env.PORT
+
+const port =
+  portRaw !== undefined && portRaw.trim() !== '' ? Number(portRaw) : 3000
+
+if (!Number.isFinite(port)) {
+  throw new Error('PORT must be a valid number')
+}
+
 app.use(cors())
 app.use(bodyParser())
 app.use(bookRoutes.allowedMethods())
 app.use(bookRoutes.routes())
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000
-
 connectToDatabase()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`)
+    app.listen(port, () => {
+      console.log(`Server running on http://localhost:${port}`)
     })
   })
   .catch((err) => {
