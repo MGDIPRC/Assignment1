@@ -10,13 +10,13 @@ const router = new Router()
 router.use(listRouter.routes())
 router.use(listRouter.allowedMethods())
 
-function getErrorMessage (err: unknown): string {
+function getErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message
   if (typeof err === 'string') return err
   return 'Something went wrong'
 }
 
-function isBook (value: unknown): value is Book {
+function isBook(value: unknown): value is Book {
   if (typeof value !== 'object' || value === null) return false
   const v = value as Record<string, unknown>
 
@@ -29,7 +29,7 @@ function isBook (value: unknown): value is Book {
   )
 }
 
-function handleError (ctx: Koa.Context, err: unknown): void {
+function handleError(ctx: Koa.Context, err: unknown): void {
   const message = getErrorMessage(err)
   const messageLower = message.toLowerCase()
 

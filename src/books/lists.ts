@@ -9,7 +9,7 @@ listRouter.get('/books', async (ctx): Promise<void> => {
 
   const filters =
     Array.isArray(filtersRaw) && filtersRaw.length > 0
-      ? (filtersRaw as Array<{ from?: string, to?: string }>)
+      ? (filtersRaw as Array<{ from?: string; to?: string }>)
       : undefined
 
   try {
@@ -20,7 +20,7 @@ listRouter.get('/books', async (ctx): Promise<void> => {
         ctx.status = 400
         ctx.body = {
           error:
-            'Invalid filters. Each filter must have valid "from" and "to" numbers where from <= to.'
+            'Invalid filters. Each filter must have valid "from" and "to" numbers where from <= to.',
         }
         return
       }
@@ -36,8 +36,8 @@ listRouter.get('/books', async (ctx): Promise<void> => {
   }
 })
 
-function validateFilters (
-  filters: Array<{ from?: string, to?: string }>
+function validateFilters(
+  filters: Array<{ from?: string; to?: string }>,
 ): boolean {
   return filters.every((filter) => {
     const fromRaw = filter.from
@@ -61,14 +61,14 @@ function validateFilters (
   })
 }
 
-function readBooksFromJsonData (): Book[] {
+function readBooksFromJsonData(): Book[] {
   return books as Book[]
 }
 
 // Filter books by price range - a book matches if it falls within ANY of the filter ranges
-function filterBooks (
+function filterBooks(
   bookList: Book[],
-  filters: Array<{ from?: string, to?: string }>
+  filters: Array<{ from?: string; to?: string }>,
 ): Book[] {
   return bookList.filter((book) =>
     filters.some((filter) => {
@@ -80,7 +80,7 @@ function filterBooks (
       const matchesTo = to === undefined || book.price <= to
 
       return matchesFrom && matchesTo
-    })
+    }),
   )
 }
 

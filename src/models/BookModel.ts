@@ -6,9 +6,9 @@ const BookSchema = new Schema(
     author: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },
-    image: { type: String, required: true, trim: true }
+    image: { type: String, required: true, trim: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 )
 
 export const BookModel =
