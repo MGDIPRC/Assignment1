@@ -24,12 +24,14 @@ app.use(bookRoutes.routes())
 
 connectToDatabase()
   .then(() => {
+    console.log('Database connected')
+  })
+  .catch((err) => {
+    console.warn('Database connection failed, continuing without DB')
+    console.warn(err.message)
+  })
+  .finally(() => {
     app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`)
     })
-  })
-  .catch((err) => {
-    console.error('Failed to start server (DB connection failed).')
-    console.error(err)
-    process.exit(1)
   })
