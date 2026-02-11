@@ -9,7 +9,9 @@
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "fmt": "prettier . --write",
     "fmt:check": "prettier . --check",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -43,6 +45,7 @@
     "eslint-plugin-promise": "^6.6.0",
     "prettier": "^3.8.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.0"
   }
 }
