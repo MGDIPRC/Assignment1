@@ -16,4 +16,22 @@ describe("orders.memory", () => {
     expect(fetched?.status).toBe("pending");
     expect(fetched?.items).toEqual([{ bookId: "book_1", qty: 2 }]);
   });
+
+});
+
+it("marks an order as fulfilled", () => {
+  const orders = createOrdersMemory();
+
+  const created = orders.createOrder({
+    items: [{ bookId: "book_1", qty: 1 }],
+  });
+
+  const fulfilled = orders.markFulfilled(created.id);
+
+  expect(fulfilled).not.toBeNull();
+  expect(fulfilled?.id).toBe(created.id);
+  expect(fulfilled?.status).toBe("fulfilled");
+
+  const fetched = orders.getOrderById(created.id);
+  expect(fetched?.status).toBe("fulfilled");
 });

@@ -16,6 +16,7 @@ type Order = {
 type OrdersPort = {
   createOrder(input: CreateOrderInput): Order;
   getOrderById(id: string): Order | null;
+  markFulfilled(id: string): Order | null;
 };
 
 export function createOrdersMemory(): OrdersPort {
@@ -43,5 +44,15 @@ export function createOrdersMemory(): OrdersPort {
     getOrderById(id) {
       return byId.get(id) ?? null;
     },
+
+    markFulfilled(id) {
+      const existing = byId.get(id);
+      if (!existing) return null;
+
+      const updated: Order = { ...existing, status: "fulfilled" };
+      byId.set(id, updated);
+      return updated;
+    },
+
   };
 }
