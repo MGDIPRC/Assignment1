@@ -124,9 +124,34 @@ async function removeBook(bookId: BookID): Promise<void> {
 
 const assignment = 'assignment-2'
 
+// look up a single book by its id
+async function getBookById(bookId: BookID): Promise<Book> {
+  if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    throw new Error("That book ID doesn't look right and might not even exist")
+  }
+
+  const doc = await BookModel.findById(bookId).lean()
+
+  if (!doc) {
+    throw new Error("Can't find a book with that ID")
+  }
+
+  return {
+    id: String((doc as any)._id),
+    name: (doc as any).name,
+    author: (doc as any).author,
+    description: (doc as any).description,
+    price: (doc as any).price,
+    image: (doc as any).image,
+  }
+}
+
+
 export default {
   assignment,
   createOrUpdateBook,
   removeBook,
   listBooks,
+  getBookById,
 }
+
