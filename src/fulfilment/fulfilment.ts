@@ -5,6 +5,7 @@ type FulfilOrderDeps = {
   };
   warehouse: {
     placeBookOnShelf(bookId: string, shelf: string, count: number): Promise<void>;
+    getTotalCopies(bookId: string): Promise<number>;
   };
 };
 
@@ -12,10 +13,19 @@ export async function fulfilOrder(orderId: string, deps: FulfilOrderDeps) {
   const order = deps.orders.getOrderById(orderId);
   if (!order) return null;
 
+  // Making sure the stock is there first
+  for (const item of order.items) {
+    const available = await deps.warehouse.getTotalCopies(item.bookId);
+    if (available < item.qty) {
+      return false;
+    }
+  }
+
+  // Subtracting new order from the stock so things are up to date
   for (const item of order.items) {
     await deps.warehouse.placeBookOnShelf(item.bookId, "main", -item.qty);
   }
 
   deps.orders.markFulfilled(orderId);
-  return deps.orders.getOrderById(orderId);
+  return true;
 }
