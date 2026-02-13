@@ -17,6 +17,7 @@ type OrdersPort = {
   createOrder(input: CreateOrderInput): Order;
   getOrderById(id: string): Order | null;
   markFulfilled(id: string): Order | null;
+  listOrders(): Order[];
 };
 
 export function createOrdersMemory(): OrdersPort {
@@ -53,6 +54,11 @@ export function createOrdersMemory(): OrdersPort {
       byId.set(id, updated);
       return updated;
     },
+
+    listOrders() {
+      return Array.from(byId.values());
+    },
+
 
   };
 }
