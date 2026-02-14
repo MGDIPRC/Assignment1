@@ -20,6 +20,11 @@ export class InMemoryWarehouse implements WarehouseData {
     if (!shelves) return 0
     return Object.values(shelves).reduce((sum, n) => sum + n, 0)
   }
+
+  async getCopies(bookId: BookID): Promise<Record<ShelfId, number>> {
+    return this.books[bookId] ?? {}
+  }
+
   async getCopiesByShelf(bookId: BookID): Promise<Record<ShelfId, number>> {
     return { ...(this.books[bookId] ?? {}) }
   }
