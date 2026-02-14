@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { InMemoryWarehouse } from "../warehouse/warehouse.memory";
 import { createOrdersMemory } from "../orders/orders.memory";
-import { fulfilOrder } from "./fulfilment";
+import { fulfilOrder } from "./fulfilment.js";
 
 describe("fulfilment", () => {
   it("fulfils an order and subtracts it from the warehouse stock", async () => {

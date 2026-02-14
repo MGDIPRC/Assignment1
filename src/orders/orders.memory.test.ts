@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createOrdersMemory } from "./orders.memory";
+import { createOrdersMemory } from "./orders.memory.js";
 
 describe("orders.memory", () => {
   it("creates an order and can read it back using its id", () => {

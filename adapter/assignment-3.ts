@@ -21,8 +21,30 @@ export interface Filter {
 // If multiple filters are provided, any book that matches at least one of them should be returned
 // Within a single filter, a book would need to match all the given conditions
 async function listBooks(filters?: Filter[]): Promise<Book[]> {
-  throw new Error('Todo')
+  const allBooks = await previous_assignment.listBooks()
+
+  if (filters === undefined || filters.length === 0) {
+    return allBooks
+  }
+
+  const matchesFilter = (book: Book, filter: Filter): boolean => {
+    const matchesFrom = filter.from === undefined || book.price >= filter.from
+    const matchesTo = filter.to === undefined || book.price <= filter.to
+
+    const matchesName =
+      filter.name === undefined ||
+      book.name.toLowerCase().includes(filter.name.toLowerCase())
+
+    const matchesAuthor =
+      filter.author === undefined ||
+      book.author.toLowerCase().includes(filter.author.toLowerCase())
+
+    return matchesFrom && matchesTo && matchesName && matchesAuthor
+  }
+
+  return allBooks.filter((book) => filters.some((f) => matchesFilter(book, f)))
 }
+
 
 async function createOrUpdateBook(book: Book): Promise<BookID> {
   return await previous_assignment.createOrUpdateBook(book)

@@ -1,8 +1,8 @@
 import Router from '@koa/router'
 import type Koa from 'koa'
 import listRouter from './lists'
-import assignment from '../../adapter/assignment-2'
-import type { Book } from '../../adapter/assignment-2'
+import assignment from '../../adapter/assignment-4'
+import type { Book } from '../../adapter/assignment-4'
 
 const router = new Router()
 
@@ -133,7 +133,7 @@ router.get('/books/:id', async (ctx) => {
       return
     }
 
-    const book = await assignment.getBookById(idParam)
+    const book = await assignment.lookupBookById(idParam)
 
     ctx.status = 200
     ctx.body = book

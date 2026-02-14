@@ -21,12 +21,16 @@ if (!Number.isFinite(port)) {
 
 app.use(cors())
 app.use(bodyParser())
-app.use(bookRoutes.allowedMethods())
+
 app.use(bookRoutes.routes())
-app.use(warehouseRoutes.allowedMethods())
+app.use(bookRoutes.allowedMethods())
+
 app.use(warehouseRoutes.routes())
-app.use(orderRoutes.allowedMethods())
+app.use(warehouseRoutes.allowedMethods())
+
 app.use(orderRoutes.routes())
+app.use(orderRoutes.allowedMethods())
+
 
 
 connectToDatabase()

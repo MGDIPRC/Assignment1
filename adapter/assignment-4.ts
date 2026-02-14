@@ -3,6 +3,8 @@ import assignment2 from './assignment-2'
 
 import { InMemoryWarehouse } from '../src/warehouse/warehouse.memory'
 import { createOrdersMemory } from '../src/orders/orders.memory'
+import { DatabaseWarehouse } from '../src/warehouse/warehouse.database'
+
 
 export type BookID = string
 
@@ -23,7 +25,11 @@ export interface Filter {
   author?: string
 }
 
-const warehouse = new InMemoryWarehouse()
+const warehouse =
+  process.env.MONGODB_URI !== undefined && process.env.MONGODB_URI.trim() !== ''
+    ? new DatabaseWarehouse()
+    : new InMemoryWarehouse()
+
 const orders = createOrdersMemory()
 
 function asRecordOfCounts(ids: BookID[]): Record<BookID, number> {
