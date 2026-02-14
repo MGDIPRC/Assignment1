@@ -4,5 +4,12 @@ export default defineConfig({
   test: {
     includeSource: ['src/**/*.{js,ts}'],
     setupFiles: ['./database_test_setup.mts'],
+
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
   },
 })
