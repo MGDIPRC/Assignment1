@@ -121,3 +121,24 @@ router.delete('/books/:id', async (ctx) => {
 })
 
 export default router
+
+// Get single book route
+router.get('/books/:id', async (ctx) => {
+  try {
+    const idParam: unknown = ctx.params.id
+
+    if (typeof idParam !== 'string' || idParam.trim() === '') {
+      ctx.status = 400
+      ctx.body = { error: 'Missing book id' }
+      return
+    }
+
+    const book = await assignment.getBookById(idParam)
+
+    ctx.status = 200
+    ctx.body = book
+  } catch (err) {
+    handleError(ctx, err)
+  }
+})
+

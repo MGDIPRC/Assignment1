@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { test, expect } from 'vitest'
 import { InMemoryWarehouse } from './warehouse.memory'
 test('gets total stock for a book', async () => {
   const warehouse = new InMemoryWarehouse()
