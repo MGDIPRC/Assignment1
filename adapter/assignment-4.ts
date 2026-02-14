@@ -35,13 +35,21 @@ function asRecordOfCounts(ids: BookID[]): Record<BookID, number> {
 async function getBookByIdOrThrow(id: BookID): Promise<Book> {
   const anyPrev = previous_assignment as any
 
-  if (typeof anyPrev.lookupBookById === 'function') return await anyPrev.lookupBookById(id)
-  if (typeof anyPrev.getBookById === 'function') return await anyPrev.getBookById(id)
-  if (typeof (assignment2 as any).getBookById === 'function') return await (assignment2 as any).getBookById(id)
+  if (typeof anyPrev.lookupBookById === 'function') {
+    return (await anyPrev.lookupBookById(id)) as Book
+  }
+
+  if (typeof anyPrev.getBookById === 'function') {
+    return (await anyPrev.getBookById(id)) as Book
+  }
+
+  if (typeof (assignment2 as any).getBookById === 'function') {
+    return (await (assignment2 as any).getBookById(id)) as Book
+  }
 
   if (typeof anyPrev.listBooks === 'function') {
-    const all = await anyPrev.listBooks()
-    const found = all.find((b: Book) => b.id === id)
+    const all = (await anyPrev.listBooks()) as Book[]
+    const found = all.find((b) => b.id === id)
     if (found) return found
   }
 
@@ -54,10 +62,10 @@ async function listBooks(filters?: Filter[]): Promise<Book[]> {
 
   const baseBooks: Book[] =
     typeof anyPrev.listBooks === 'function'
-      ? await anyPrev.listBooks(filters)
-      : await (assignment2 as any).listBooks(
-        (filters ?? []).map((f) => ({ from: f.from, to: f.to })),
-      )
+      ? ((await anyPrev.listBooks(filters)) as Book[])
+      : ((await (assignment2 as any).listBooks(
+        (filters ?? []).map((f: Filter) => ({ from: f.from, to: f.to })),
+      )) as Book[])
 
   // Add stock totals
   const withStock = await Promise.all(
@@ -73,7 +81,7 @@ async function listBooks(filters?: Filter[]): Promise<Book[]> {
 }
 
 async function createOrUpdateBook(book: Book): Promise<BookID> {
-  return await (previous_assignment as any).createOrUpdateBook(book)
+  return (await (previous_assignment as any).createOrUpdateBook(book)) as BookID
 }
 
 async function removeBook(book: BookID): Promise<void> {
@@ -120,7 +128,7 @@ async function findBookOnShelf(
 
   const byShelf = await warehouse.getCopiesByShelf(bookId)
   return Object.entries(byShelf)
-    .map(([shelf, count]) => ({ shelf, count }))
+    .map(([shelf, count]) => ({ shelf, count: count as number }))
     .filter((x) => x.count !== 0)
 }
 
@@ -133,11 +141,13 @@ async function fulfilOrder(
   }>,
 ): Promise<void> {
   const order = orders.getOrderById(orderId)
-  if (!order) throw new Error("I can't find an order with that ID")
+  if (order === null) throw new Error("I can't find an order with that ID")
 
   // Build the required totals from the order
   const required: Record<BookID, number> = {}
-  for (const item of order.items) required[item.bookId] = (required[item.bookId] ?? 0) + item.qty
+  for (const item of order.items) {
+    required[item.bookId] = (required[item.bookId] ?? 0) + item.qty
+  }
 
   // Build the totals from the fulfilment request
   const fulfilledTotals: Record<BookID, number> = {}
@@ -148,12 +158,12 @@ async function fulfilOrder(
   // Fulfil what the order actually wants
   for (const [bookId, qty] of Object.entries(required)) {
     if ((fulfilledTotals[bookId] ?? 0) !== qty) {
-      throw new Error("Doesn't look right")
+      throw new Error("This doesn't look right")
     }
   }
   for (const bookId of Object.keys(fulfilledTotals)) {
     if (required[bookId] === undefined) {
-      throw new Error("Doesn't look right")
+      throw new Error("This doesn't look right")
     }
   }
 
@@ -161,7 +171,7 @@ async function fulfilOrder(
   for (const f of booksFulfilled) {
     const available = await warehouse.getCopiesOnShelf(f.book, f.shelf)
     if (available < f.numberOfBooks) {
-      throw new Error('Not enough stock on shelves')
+      throw new Error("There isn't enough stock on the shelves")
     }
   }
 
@@ -175,9 +185,11 @@ async function fulfilOrder(
 async function listOrders(): Promise<
   Array<{ orderId: OrderId; books: Record<BookID, number> }>
 > {
-  return orders.listOrders().map((o) => {
+  return orders.listOrders().map((o: { id: string; items: Array<{ bookId: string; qty: number }> }) => {
     const books: Record<BookID, number> = {}
-    for (const item of o.items) books[item.bookId] = (books[item.bookId] ?? 0) + item.qty
+    for (const item of o.items) {
+      books[item.bookId] = (books[item.bookId] ?? 0) + item.qty
+    }
     return { orderId: o.id, books }
   })
 }

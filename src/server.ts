@@ -1,3 +1,5 @@
+import warehouseRoutes from './warehouse/warehouse.routes'
+import orderRoutes from './orders/orders.routes'
 import Koa from 'koa'
 import cors from '@koa/cors'
 import bodyParser from 'koa-bodyparser'
@@ -21,6 +23,11 @@ app.use(cors())
 app.use(bodyParser())
 app.use(bookRoutes.allowedMethods())
 app.use(bookRoutes.routes())
+app.use(warehouseRoutes.allowedMethods())
+app.use(warehouseRoutes.routes())
+app.use(orderRoutes.allowedMethods())
+app.use(orderRoutes.routes())
+
 
 connectToDatabase()
   .then(() => {
