@@ -2,17 +2,17 @@ import mongoose, { Schema } from 'mongoose'
 import type { WarehouseData } from './warehouse.data'
 import type { BookID, ShelfId } from './warehouse.types'
 
-type WarehouseStockDoc = {
+interface WarehouseStockDoc {
   bookId: string
   shelfId: string
   count: number
 }
 
-function getWarehouseDb() {
+function getWarehouseDb(): mongoose.Connection {
   return mongoose.connection.useDb('warehouse')
 }
 
-function getStockModel() {
+function getStockModel(): mongoose.Model<WarehouseStockDoc> {
   const db = getWarehouseDb()
 
   const schema = new Schema<WarehouseStockDoc>(

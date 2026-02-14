@@ -22,6 +22,7 @@ main()
     console.error('Seeding failed:', err)
     process.exitCode = 1
   })
-  .finally(async () => {
-    await mongoose.disconnect()
+  .finally(() => {
+    void mongoose.disconnect()
   })
+
