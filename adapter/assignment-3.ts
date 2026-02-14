@@ -45,7 +45,6 @@ async function listBooks(filters?: Filter[]): Promise<Book[]> {
   return allBooks.filter((book) => filters.some((f) => matchesFilter(book, f)))
 }
 
-
 async function createOrUpdateBook(book: Book): Promise<BookID> {
   return await previous_assignment.createOrUpdateBook(book)
 }

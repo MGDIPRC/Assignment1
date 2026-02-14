@@ -31,8 +31,6 @@ app.use(warehouseRoutes.allowedMethods())
 app.use(orderRoutes.routes())
 app.use(orderRoutes.allowedMethods())
 
-
-
 connectToDatabase()
   .then(() => {
     console.log('Database connected')

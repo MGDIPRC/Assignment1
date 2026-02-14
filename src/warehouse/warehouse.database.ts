@@ -26,8 +26,10 @@ function getStockModel(): mongoose.Model<WarehouseStockDoc> {
 
   schema.index({ bookId: 1, shelfId: 1 }, { unique: true })
 
-  return db.models.WarehouseStock ??
+  return (
+    db.models.WarehouseStock ??
     db.model<WarehouseStockDoc>('WarehouseStock', schema)
+  )
 }
 
 export class DatabaseWarehouse implements WarehouseData {
@@ -45,12 +47,17 @@ export class DatabaseWarehouse implements WarehouseData {
     )
   }
 
-  public async getCopiesOnShelf(bookId: BookID, shelf: ShelfId): Promise<number> {
+  public async getCopiesOnShelf(
+    bookId: BookID,
+    shelf: ShelfId,
+  ): Promise<number> {
     const doc = await this.Stock.findOne({ bookId, shelfId: shelf }).lean()
     return doc?.count ?? 0
   }
 
-  public async getCopiesByShelf(bookId: BookID): Promise<Record<ShelfId, number>> {
+  public async getCopiesByShelf(
+    bookId: BookID,
+  ): Promise<Record<ShelfId, number>> {
     const docs = await this.Stock.find({ bookId }).lean()
     const result: Record<ShelfId, number> = {}
     for (const d of docs) {

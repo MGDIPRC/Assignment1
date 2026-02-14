@@ -146,7 +146,6 @@ async function getBookById(bookId: BookID): Promise<Book> {
   }
 }
 
-
 export default {
   assignment,
   createOrUpdateBook,
@@ -154,4 +153,3 @@ export default {
   listBooks,
   getBookById,
 }
-

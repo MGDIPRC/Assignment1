@@ -1,10 +1,16 @@
 interface FulfilOrderDeps {
   orders: {
-    getOrderById: (id: string) => { id: string; items: Array<{ bookId: string; qty: number }> } | null
+    getOrderById: (
+      id: string,
+    ) => { id: string; items: Array<{ bookId: string; qty: number }> } | null
     markFulfilled: (id: string) => unknown
   }
   warehouse: {
-    placeBookOnShelf: (bookId: string, shelf: string, count: number) => Promise<void>
+    placeBookOnShelf: (
+      bookId: string,
+      shelf: string,
+      count: number,
+    ) => Promise<void>
     getTotalCopies: (bookId: string) => Promise<number>
   }
 }

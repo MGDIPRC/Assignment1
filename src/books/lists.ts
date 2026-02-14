@@ -24,8 +24,14 @@ listRouter.get('/books', async (ctx): Promise<void> => {
       }
 
       const parsedFilters: Filter[] = filters.map((f) => ({
-        from: typeof f.from === 'string' && f.from.trim() !== '' ? Number(f.from) : undefined,
-        to: typeof f.to === 'string' && f.to.trim() !== '' ? Number(f.to) : undefined,
+        from:
+          typeof f.from === 'string' && f.from.trim() !== ''
+            ? Number(f.from)
+            : undefined,
+        to:
+          typeof f.to === 'string' && f.to.trim() !== ''
+            ? Number(f.to)
+            : undefined,
       }))
 
       ctx.body = await assignment.listBooks(parsedFilters)
@@ -39,13 +45,21 @@ listRouter.get('/books', async (ctx): Promise<void> => {
   }
 })
 
-function validateFilters(filters: Array<{ from?: string; to?: string }>): boolean {
+function validateFilters(
+  filters: Array<{ from?: string; to?: string }>,
+): boolean {
   return filters.every((filter) => {
     const fromRaw = filter.from
     const toRaw = filter.to
 
-    const from = typeof fromRaw === 'string' && fromRaw.trim() !== '' ? Number(fromRaw) : undefined
-    const to = typeof toRaw === 'string' && toRaw.trim() !== '' ? Number(toRaw) : undefined
+    const from =
+      typeof fromRaw === 'string' && fromRaw.trim() !== ''
+        ? Number(fromRaw)
+        : undefined
+    const to =
+      typeof toRaw === 'string' && toRaw.trim() !== ''
+        ? Number(toRaw)
+        : undefined
 
     if (from !== undefined && Number.isNaN(from)) return false
     if (to !== undefined && Number.isNaN(to)) return false

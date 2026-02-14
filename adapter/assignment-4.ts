@@ -5,7 +5,6 @@ import { InMemoryWarehouse } from '../src/warehouse/warehouse.memory'
 import { createOrdersMemory } from '../src/orders/orders.memory'
 import { DatabaseWarehouse } from '../src/warehouse/warehouse.database'
 
-
 export type BookID = string
 
 export interface Book {
@@ -62,7 +61,6 @@ async function getBookByIdOrThrow(id: BookID): Promise<Book> {
   throw new Error("I can't find a book with that ID")
 }
 
-
 async function listBooks(filters?: Filter[]): Promise<Book[]> {
   const anyPrev = previous_assignment as any
 
@@ -70,8 +68,8 @@ async function listBooks(filters?: Filter[]): Promise<Book[]> {
     typeof anyPrev.listBooks === 'function'
       ? ((await anyPrev.listBooks(filters)) as Book[])
       : ((await (assignment2 as any).listBooks(
-        (filters ?? []).map((f: Filter) => ({ from: f.from, to: f.to })),
-      )) as Book[])
+          (filters ?? []).map((f: Filter) => ({ from: f.from, to: f.to })),
+        )) as Book[])
 
   // Add stock totals
   const withStock = await Promise.all(
@@ -191,13 +189,15 @@ async function fulfilOrder(
 async function listOrders(): Promise<
   Array<{ orderId: OrderId; books: Record<BookID, number> }>
 > {
-  return orders.listOrders().map((o: { id: string; items: Array<{ bookId: string; qty: number }> }) => {
-    const books: Record<BookID, number> = {}
-    for (const item of o.items) {
-      books[item.bookId] = (books[item.bookId] ?? 0) + item.qty
-    }
-    return { orderId: o.id, books }
-  })
+  return orders
+    .listOrders()
+    .map((o: { id: string; items: Array<{ bookId: string; qty: number }> }) => {
+      const books: Record<BookID, number> = {}
+      for (const item of o.items) {
+        books[item.bookId] = (books[item.bookId] ?? 0) + item.qty
+      }
+      return { orderId: o.id, books }
+    })
 }
 
 const assignment = 'assignment-4'

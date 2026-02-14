@@ -14,12 +14,16 @@ export class InMemoryWarehouse implements WarehouseData {
     this.books[bookId][shelf] += count
   }
 
-  public async getCopiesByShelf(bookId: BookID): Promise<Record<ShelfId, number>> {
+  public async getCopiesByShelf(
+    bookId: BookID,
+  ): Promise<Record<ShelfId, number>> {
     return this.books[bookId] ?? {}
   }
 
-
-  public async getCopiesOnShelf(bookId: BookID, shelf: ShelfId): Promise<number> {
+  public async getCopiesOnShelf(
+    bookId: BookID,
+    shelf: ShelfId,
+  ): Promise<number> {
     return this.books[bookId]?.[shelf] ?? 0
   }
 

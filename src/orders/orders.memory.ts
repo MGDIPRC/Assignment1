@@ -4,15 +4,13 @@ interface OrderItem {
 }
 
 interface CreateOrderInput {
-  items: OrderItem[];
-
+  items: OrderItem[]
 }
 
 interface Order {
   id: string
   status: 'pending' | 'fulfilled'
-  items: OrderItem[];
-
+  items: OrderItem[]
 }
 
 interface OrdersPort {
@@ -60,6 +58,5 @@ export function createOrdersMemory(): OrdersPort {
     listOrders: (): Order[] => {
       return Array.from(byId.values())
     },
-
   }
 }

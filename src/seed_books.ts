@@ -25,4 +25,3 @@ main()
   .finally(() => {
     void mongoose.disconnect()
   })
-
