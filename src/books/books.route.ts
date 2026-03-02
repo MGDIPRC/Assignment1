@@ -1,8 +1,7 @@
-import { Body, Get, Path, Post, Route, Tags } from 'tsoa'
 import assignment from '../../adapter/assignment-4'
-import { Body, Delete, Get, Path, Post, Put, Route, Tags } from 'tsoa'
+import { Body, Get, Path, Post, Put, Delete, Route, Tags } from 'tsoa'
 
-type BookPayload = {
+interface BookPayload {
   name: string
   author: string
   description: string
@@ -10,16 +9,17 @@ type BookPayload = {
   image: string
 }
 
-type CreatedResponse = { id: string }
+interface CreatedResponse {
+  id: string
+}
 
 @Route('books')
 @Tags('Books')
 export class BooksRoute {
-
   @Put('{id}')
   public async updateBook(
     @Path() id: string,
-    @Body() bookPayload: BookPayload
+    @Body() bookPayload: BookPayload,
   ): Promise<CreatedResponse> {
     if (typeof id !== 'string' || id.trim() === '') {
       throw new Error('Missing book id')
@@ -37,7 +37,10 @@ export class BooksRoute {
       throw new Error('Invalid book payload')
     }
 
-    const updatedId = await assignment.createOrUpdateBook({ ...bookPayload, id })
+    const updatedId = await assignment.createOrUpdateBook({
+      ...bookPayload,
+      id,
+    })
     return { id: updatedId }
   }
 
@@ -67,7 +70,6 @@ export class BooksRoute {
     const id = await assignment.createOrUpdateBook(book)
     return { id }
   }
-
 
   @Delete('{id}')
   public async deleteBook(@Path() id: string): Promise<void> {

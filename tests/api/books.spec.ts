@@ -4,7 +4,9 @@ import { BooksApi, Configuration } from '../../client'
 
 setup()
 
-test<ServerTestContext>('can create, update, then fetch a book (SDK only)', async ({ address }) => {
+test<ServerTestContext>('can create, update, then fetch a book (SDK only)', async ({
+  address,
+}) => {
   const client = new BooksApi(new Configuration({ basePath: address }))
 
   const created = await client.createBook({
@@ -13,8 +15,8 @@ test<ServerTestContext>('can create, update, then fetch a book (SDK only)', asyn
       author: 'Test Author',
       description: 'Test Description',
       price: 9.99,
-      image: 'https://example.com/test.png'
-    }
+      image: 'https://example.com/test.png',
+    },
   })
 
   expect(typeof created.id).toBe('string')
@@ -30,8 +32,8 @@ test<ServerTestContext>('can create, update, then fetch a book (SDK only)', asyn
       author: 'Test Author',
       description: 'Test Description',
       price: 10.99,
-      image: 'https://example.com/test.png'
-    }
+      image: 'https://example.com/test.png',
+    },
   })
 
   expect(updated.id).toEqual(created.id)
@@ -42,5 +44,4 @@ test<ServerTestContext>('can create, update, then fetch a book (SDK only)', asyn
   await client.deleteBook({ id: created.id })
 
   await expect(client.getBookById({ id: created.id })).rejects.toBeDefined()
-
 })

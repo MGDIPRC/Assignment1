@@ -2,7 +2,6 @@ import Router from '@koa/router'
 import type Koa from 'koa'
 import listRouter from './lists'
 import assignment from '../../adapter/assignment-4'
-import type { Book } from '../../adapter/assignment-4'
 
 const router = new Router()
 
@@ -14,19 +13,6 @@ function getErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message
   if (typeof err === 'string') return err
   return 'Something went wrong'
-}
-
-function isBook(value: unknown): value is Book {
-  if (typeof value !== 'object' || value === null) return false
-  const v = value as Record<string, unknown>
-
-  return (
-    typeof v.name === 'string' &&
-    typeof v.author === 'string' &&
-    typeof v.description === 'string' &&
-    typeof v.price === 'number' &&
-    typeof v.image === 'string'
-  )
 }
 
 function handleError(ctx: Koa.Context, err: unknown): void {
@@ -51,8 +37,6 @@ function handleError(ctx: Koa.Context, err: unknown): void {
 
   ctx.body = { error: message }
 }
-
-
 
 // Get single book route
 router.get('/books/:id', async (ctx) => {

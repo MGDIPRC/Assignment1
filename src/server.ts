@@ -1,19 +1,23 @@
-import warehouseRoutes from './warehouse/warehouse.routes'
-import orderRoutes from './orders/orders.routes'
+import type { Server } from 'http'
 import Koa from 'koa'
+import type { Middleware } from 'koa'
 import cors from '@koa/cors'
 import bodyParser from 'koa-bodyparser'
 import qs from 'koa-qs'
-import bookRoutes from './books/book_routes'
+import Router from '@koa/router'
+import orderRoutes from './orders/orders.routes'
 import { connectToDatabase } from './db'
 import { RegisterRoutes } from '../build/routes'
-import Router from '@koa/router'
 import swagger from '../build/swagger.json'
+import { koaSwagger } from 'koa2-swagger-ui'
 
-const { koaSwagger } = require('koa2-swagger-ui')
 
 
-export default function startServer(port: number = 3000, testMode: boolean = false) {
+
+export default function startServer(
+  port: number = 3000,
+  testMode: boolean = false,
+): Server {
   const app = new Koa()
   qs(app)
 
@@ -29,24 +33,16 @@ export default function startServer(port: number = 3000, testMode: boolean = fal
   docsRouter.get('/docs/spec', (ctx) => {
     ctx.body = swagger
   })
-
-  app.use(
-    koaSwagger({
-      routePrefix: '/docs',
-      swaggerOptions: {
-        url: '/docs/spec'
-      }
-    })
-  )
-
   app.use(docsRouter.routes())
   app.use(docsRouter.allowedMethods())
 
-  app.use(bookRoutes.routes())
-  app.use(bookRoutes.allowedMethods())
-
-  app.use(warehouseRoutes.routes())
-  app.use(warehouseRoutes.allowedMethods())
+  const swaggerMiddleware = koaSwagger({
+    routePrefix: '/docs',
+    swaggerOptions: {
+      url: '/docs/spec',
+    },
+  }) as unknown as Middleware
+  app.use(swaggerMiddleware)
 
   app.use(orderRoutes.routes())
   app.use(orderRoutes.allowedMethods())
