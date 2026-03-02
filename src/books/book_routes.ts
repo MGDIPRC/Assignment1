@@ -54,25 +54,6 @@ function handleError(ctx: Koa.Context, err: unknown): void {
 
 
 
-// Delete book route
-router.delete('/books/:id', async (ctx) => {
-  try {
-    const idParam: unknown = ctx.params.id
-
-    if (typeof idParam !== 'string' || idParam.trim() === '') {
-      ctx.status = 400
-      ctx.body = { error: 'Missing book id' }
-      return
-    }
-
-    await assignment.removeBook(idParam)
-    ctx.status = 204
-  } catch (err) {
-    handleError(ctx, err)
-  }
-})
-
-
 // Get single book route
 router.get('/books/:id', async (ctx) => {
   try {

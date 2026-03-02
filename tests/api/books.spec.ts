@@ -38,4 +38,9 @@ test<ServerTestContext>('can create, update, then fetch a book (SDK only)', asyn
 
   const book2 = await client.getBookById({ id: created.id })
   expect(book2).toBeDefined()
+
+  await client.deleteBook({ id: created.id })
+
+  await expect(client.getBookById({ id: created.id })).rejects.toBeDefined()
+
 })
