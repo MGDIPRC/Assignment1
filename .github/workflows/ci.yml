@@ -9,33 +9,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-      node-version: '20'
-      cache: 'npm'
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Typecheck
-      run: npm run typecheck
+      - name: Generate tsoa routes + OpenAPI client
+        run: |
+          npx tsoa spec-and-routes
+          ./generate-openapi.sh
 
-    - name: Lint
-      run: npm run lint
+      - name: Run unit tests
+        run: npm run test:unit
+        env:
+          MONGOMS_DOWNLOAD_DIR: ${{ runner.temp }}/mongodb-binaries
 
-    - name: Format check
-      run: npm run fmt:check
+      - name: Run api tests
+        run: npm run test:api
+        env:
+          MONGOMS_DOWNLOAD_DIR: ${{ runner.temp }}/mongodb-binaries
 
-    - name: Unit tests
-      run: npm run test:unit
-      env:
-      MONGOMS_DOWNLOAD_DIR: ${{ runner.temp }}/mongodb-binaries
+      - name: Lint
+        run: npm run lint
 
-    - name: API tests
-      run: npm run test:api
-      env:
-      MONGOMS_DOWNLOAD_DIR: ${{ runner.temp }}/mongodb-binaries
+      - name: Format check
+        run: npm run fmt:check
+
+      - name: Typecheck
+        run: npm run typecheck

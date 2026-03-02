@@ -4,19 +4,16 @@
   "description": "This is a template repository for the first assignment in BVD 103 at McMaster Continuing Education.",
   "main": "index.js",
   "scripts": {
-    "start-server": "tsx src/start.ts",
+    "start-server": "tsx src/server.ts",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "fmt": "prettier . --write",
     "fmt:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
-    "generate:tsoa": "tsoa spec-and-routes",
-    "generate:client": "./generate-openapi.sh",
-    "generate": "npm run generate:tsoa && npm run generate:client",
     "test": "vitest",
     "test:ci": "vitest run",
     "test:unit": "vitest run src",
-    "test:api": "npm run generate:tsoa && npm run generate:client && vitest run tests/api"
+    "test:api": "./generate-openapi.sh && vitest run tests/api"
   },
   "keywords": [],
   "author": "",
