@@ -6,6 +6,8 @@ import bodyParser from 'koa-bodyparser'
 import qs from 'koa-qs'
 import bookRoutes from './books/book_routes'
 import { connectToDatabase } from './db'
+import { RegisterRoutes } from '../build/routes'
+import Router from '@koa/router'
 
 const app = new Koa()
 qs(app)
@@ -21,6 +23,11 @@ if (!Number.isFinite(port)) {
 
 app.use(cors())
 app.use(bodyParser())
+
+const tsoaRouter = new Router()
+RegisterRoutes(tsoaRouter)
+app.use(tsoaRouter.routes())
+app.use(tsoaRouter.allowedMethods())
 
 app.use(bookRoutes.routes())
 app.use(bookRoutes.allowedMethods())
