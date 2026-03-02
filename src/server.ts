@@ -12,63 +12,61 @@ import swagger from '../build/swagger.json'
 
 const { koaSwagger } = require('koa2-swagger-ui')
 
-const app = new Koa()
-qs(app)
 
-const portRaw = process.env.PORT
+export default function startServer(port: number = 3000, testMode: boolean = false) {
+  const app = new Koa()
+  qs(app)
 
-const port =
-  portRaw !== undefined && portRaw.trim() !== '' ? Number(portRaw) : 3000
+  app.use(cors())
+  app.use(bodyParser())
 
-if (!Number.isFinite(port)) {
-  throw new Error('PORT must be a valid number')
-}
+  const tsoaRouter = new Router()
+  RegisterRoutes(tsoaRouter)
+  app.use(tsoaRouter.routes())
+  app.use(tsoaRouter.allowedMethods())
 
-app.use(cors())
-app.use(bodyParser())
+  const docsRouter = new Router()
+  docsRouter.get('/docs/spec', (ctx) => {
+    ctx.body = swagger
+  })
 
-const tsoaRouter = new Router()
-RegisterRoutes(tsoaRouter)
-app.use(tsoaRouter.routes())
-app.use(tsoaRouter.allowedMethods())
+  app.use(
+    koaSwagger({
+      routePrefix: '/docs',
+      swaggerOptions: {
+        url: '/docs/spec'
+      }
+    })
+  )
 
-const docsRouter = new Router()
+  app.use(docsRouter.routes())
+  app.use(docsRouter.allowedMethods())
 
-docsRouter.get('/docs/spec', (ctx) => {
-  ctx.body = swagger
-})
+  app.use(bookRoutes.routes())
+  app.use(bookRoutes.allowedMethods())
 
-app.use(
-  koaSwagger({
-    routePrefix: '/docs',
-    swaggerOptions: {
-      url: '/docs/spec'
+  app.use(warehouseRoutes.routes())
+  app.use(warehouseRoutes.allowedMethods())
+
+  app.use(orderRoutes.routes())
+  app.use(orderRoutes.allowedMethods())
+
+  if (!testMode) {
+    connectToDatabase()
+      .then(() => {
+        console.log('Database connected')
+      })
+      .catch((err) => {
+        console.warn('Database connection failed, continuing without DB')
+        console.warn(err.message)
+      })
+  }
+
+  const server = app.listen(port, () => {
+    if (!testMode) {
+      console.log(`Server running on http://localhost:${port}`)
     }
   })
-)
 
-app.use(docsRouter.routes())
-app.use(docsRouter.allowedMethods())
-
-app.use(bookRoutes.routes())
-app.use(bookRoutes.allowedMethods())
-
-app.use(warehouseRoutes.routes())
-app.use(warehouseRoutes.allowedMethods())
-
-app.use(orderRoutes.routes())
-app.use(orderRoutes.allowedMethods())
-
-connectToDatabase()
-  .then(() => {
-    console.log('Database connected')
-  })
-  .catch((err) => {
-    console.warn('Database connection failed, continuing without DB')
-    console.warn(err.message)
-  })
-  .finally(() => {
-    app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}`)
-    })
-  })
+  return server
+}
