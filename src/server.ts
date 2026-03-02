@@ -11,9 +11,6 @@ import { RegisterRoutes } from '../build/routes'
 import swagger from '../build/swagger.json'
 import { koaSwagger } from 'koa2-swagger-ui'
 
-
-
-
 export default function startServer(
   port: number = 3000,
   testMode: boolean = false,

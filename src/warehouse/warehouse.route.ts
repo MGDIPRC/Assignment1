@@ -30,7 +30,6 @@ export class WarehouseRoute {
     }
 
     await assignment.placeBooksOnShelf(bookId, count, shelfId)
-    return
   }
 
   @Get('{bookId}')
