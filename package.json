@@ -10,8 +10,13 @@
     "fmt": "prettier . --write",
     "fmt:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
+    "generate:tsoa": "tsoa spec-and-routes",
+    "generate:client": "./generate-openapi.sh",
+    "generate": "npm run generate:tsoa && npm run generate:client",
     "test": "vitest",
-    "test:ci": "vitest run"
+    "test:ci": "vitest run",
+    "test:unit": "vitest run src",
+    "test:api": "npm run generate:tsoa && npm run generate:client && vitest run tests/api"
   },
   "keywords": [],
   "author": "",
