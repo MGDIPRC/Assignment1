@@ -52,24 +52,6 @@ function handleError(ctx: Koa.Context, err: unknown): void {
   ctx.body = { error: message }
 }
 
-// Create book route
-router.post('/books', async (ctx) => {
-  try {
-    const payload: unknown = ctx.request.body
-
-    if (!isBook(payload)) {
-      ctx.status = 400
-      ctx.body = { error: 'Invalid book payload' }
-      return
-    }
-
-    const id = await assignment.createOrUpdateBook(payload)
-    ctx.status = 201
-    ctx.body = { id }
-  } catch (err) {
-    handleError(ctx, err)
-  }
-})
 
 // Update book route
 router.put('/books/:id', async (ctx) => {
@@ -120,7 +102,6 @@ router.delete('/books/:id', async (ctx) => {
   }
 })
 
-export default router
 
 // Get single book route
 router.get('/books/:id', async (ctx) => {
@@ -141,3 +122,4 @@ router.get('/books/:id', async (ctx) => {
     handleError(ctx, err)
   }
 })
+export default router
