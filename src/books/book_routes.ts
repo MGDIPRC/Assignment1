@@ -53,36 +53,6 @@ function handleError(ctx: Koa.Context, err: unknown): void {
 }
 
 
-// Update book route
-router.put('/books/:id', async (ctx) => {
-  try {
-    const idParam: unknown = ctx.params.id
-
-    if (typeof idParam !== 'string' || idParam.trim() === '') {
-      ctx.status = 400
-      ctx.body = { error: 'Missing book id' }
-      return
-    }
-
-    const payload: unknown = ctx.request.body
-    const merged: unknown =
-      typeof payload === 'object' && payload !== null
-        ? { ...(payload as Record<string, unknown>), id: idParam }
-        : { id: idParam }
-
-    if (!isBook(merged)) {
-      ctx.status = 400
-      ctx.body = { error: 'Invalid book payload' }
-      return
-    }
-
-    const updatedId = await assignment.createOrUpdateBook(merged)
-    ctx.status = 200
-    ctx.body = { id: updatedId }
-  } catch (err) {
-    handleError(ctx, err)
-  }
-})
 
 // Delete book route
 router.delete('/books/:id', async (ctx) => {

@@ -1,5 +1,6 @@
 import { Body, Get, Path, Post, Route, Tags } from 'tsoa'
 import assignment from '../../adapter/assignment-4'
+import { Body, Get, Path, Post, Put, Route, Tags } from 'tsoa'
 
 type BookPayload = {
   name: string
@@ -14,6 +15,31 @@ type CreatedResponse = { id: string }
 @Route('books')
 @Tags('Books')
 export class BooksRoute {
+
+  @Put('{id}')
+  public async updateBook(
+    @Path() id: string,
+    @Body() bookPayload: BookPayload
+  ): Promise<CreatedResponse> {
+    if (typeof id !== 'string' || id.trim() === '') {
+      throw new Error('Missing book id')
+    }
+
+    if (
+      typeof bookPayload !== 'object' ||
+      bookPayload === null ||
+      typeof bookPayload.name !== 'string' ||
+      typeof bookPayload.author !== 'string' ||
+      typeof bookPayload.description !== 'string' ||
+      typeof bookPayload.price !== 'number' ||
+      typeof bookPayload.image !== 'string'
+    ) {
+      throw new Error('Invalid book payload')
+    }
+
+    const updatedId = await assignment.createOrUpdateBook({ ...bookPayload, id })
+    return { id: updatedId }
+  }
 
   @Get('{id}')
   public async getBookById(@Path() id: string): Promise<unknown> {

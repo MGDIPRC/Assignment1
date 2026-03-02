@@ -4,7 +4,7 @@ import { BooksApi, Configuration } from '../../client'
 
 setup()
 
-test<ServerTestContext>('can create a book and then fetch it (SDK only)', async ({ address }) => {
+test<ServerTestContext>('can create, update, then fetch a book (SDK only)', async ({ address }) => {
   const client = new BooksApi(new Configuration({ basePath: address }))
 
   const created = await client.createBook({
@@ -20,6 +20,22 @@ test<ServerTestContext>('can create a book and then fetch it (SDK only)', async 
   expect(typeof created.id).toBe('string')
   expect(created.id.length).toBeGreaterThan(0)
 
-  const book = await client.getBookById({ id: created.id })
-  expect(book).toBeDefined()
+  const book1 = await client.getBookById({ id: created.id })
+  expect(book1).toBeDefined()
+
+  const updated = await client.updateBook({
+    id: created.id,
+    bookPayload: {
+      name: 'Test Book UPDATED',
+      author: 'Test Author',
+      description: 'Test Description',
+      price: 10.99,
+      image: 'https://example.com/test.png'
+    }
+  })
+
+  expect(updated.id).toEqual(created.id)
+
+  const book2 = await client.getBookById({ id: created.id })
+  expect(book2).toBeDefined()
 })
