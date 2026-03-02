@@ -8,6 +8,9 @@ import bookRoutes from './books/book_routes'
 import { connectToDatabase } from './db'
 import { RegisterRoutes } from '../build/routes'
 import Router from '@koa/router'
+import swagger from '../build/swagger.json'
+
+const { koaSwagger } = require('koa2-swagger-ui')
 
 const app = new Koa()
 qs(app)
@@ -28,6 +31,24 @@ const tsoaRouter = new Router()
 RegisterRoutes(tsoaRouter)
 app.use(tsoaRouter.routes())
 app.use(tsoaRouter.allowedMethods())
+
+const docsRouter = new Router()
+
+docsRouter.get('/docs/spec', (ctx) => {
+  ctx.body = swagger
+})
+
+app.use(
+  koaSwagger({
+    routePrefix: '/docs',
+    swaggerOptions: {
+      url: '/docs/spec'
+    }
+  })
+)
+
+app.use(docsRouter.routes())
+app.use(docsRouter.allowedMethods())
 
 app.use(bookRoutes.routes())
 app.use(bookRoutes.allowedMethods())
