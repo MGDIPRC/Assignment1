@@ -1,5 +1,5 @@
 import assignment from '../../adapter/assignment-4'
-import { Body, Get, Path, Post, Route, Tags } from 'tsoa'
+import { Body, Get, Path, Post, Route, SuccessResponse, Tags } from 'tsoa'
 
 export interface OrderBooksPayload {
   books: string[]
@@ -24,14 +24,41 @@ export interface ListedOrder {
   books: Record<string, number>
 }
 
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((x) => typeof x === 'string')
+}
+
+function isFulfilmentInputArray(value: unknown): value is FulfilmentInput[] {
+  return (
+    Array.isArray(value) &&
+    value.every((x) => {
+      if (typeof x !== 'object' || x === null) return false
+      const v = x as Record<string, unknown>
+      return (
+        typeof v.book === 'string' &&
+        typeof v.shelf === 'string' &&
+        typeof v.numberOfBooks === 'number' &&
+        Number.isFinite(v.numberOfBooks)
+      )
+    })
+  )
+}
+
 @Route('orders')
 @Tags('Orders')
 export class OrdersRoute {
   @Post()
+  @SuccessResponse('201', 'Created')
   public async orderBooks(
     @Body() payload: OrderBooksPayload,
   ): Promise<CreatedOrderResponse> {
-    return await assignment.orderBooks(payload.books)
+    const books = payload?.books
+
+    if (!isStringArray(books) || books.length === 0) {
+      throw new Error('Invalid books list')
+    }
+
+    return await assignment.orderBooks(books)
   }
 
   @Get()
@@ -40,10 +67,20 @@ export class OrdersRoute {
   }
 
   @Post('{orderId}/fulfil')
+  @SuccessResponse('204', 'No Content')
   public async fulfilOrder(
     @Path() orderId: string,
     @Body() payload: FulfilOrderPayload,
   ): Promise<void> {
-    await assignment.fulfilOrder(orderId, payload.booksFulfilled)
+    if (typeof orderId !== 'string' || orderId.trim() === '') {
+      throw new Error('Missing order id')
+    }
+
+    const booksFulfilled = payload?.booksFulfilled
+    if (!isFulfilmentInputArray(booksFulfilled)) {
+      throw new Error('Invalid booksFulfilled entries')
+    }
+
+    await assignment.fulfilOrder(orderId, booksFulfilled)
   }
 }

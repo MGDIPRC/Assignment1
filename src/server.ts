@@ -5,7 +5,6 @@ import cors from '@koa/cors'
 import bodyParser from 'koa-bodyparser'
 import qs from 'koa-qs'
 import Router from '@koa/router'
-import orderRoutes from './orders/orders.routes'
 import { connectToDatabase } from './db'
 import { RegisterRoutes } from '../build/routes'
 import swagger from '../build/swagger.json'
@@ -40,9 +39,6 @@ export default function startServer(
     },
   }) as unknown as Middleware
   app.use(swaggerMiddleware)
-
-  app.use(orderRoutes.routes())
-  app.use(orderRoutes.allowedMethods())
 
   if (!testMode) {
     connectToDatabase()
