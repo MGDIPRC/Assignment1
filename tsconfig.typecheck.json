@@ -1,15 +1,7 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "src/**/*.ts",
-    "tests/**/*.ts",
-    "adapter/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "client"
-  ],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "adapter/**/*.ts"],
+  "exclude": ["node_modules", "build", "client"],
   "compilerOptions": {
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
