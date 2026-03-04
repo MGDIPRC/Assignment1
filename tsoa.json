@@ -1,10 +1,16 @@
 {
   "entryFile": "src/server.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
-  "controllerPathGlobs": ["src/**/*.route.ts"],
+  "controllerPathGlobs": [
+    "src/**/*.route.ts"
+  ],
   "spec": {
     "outputDirectory": "build",
     "specVersion": 3
+  },
+  "servers": {
+    "url": "http://localhost:3000",
+    "description": "Local development server"
   },
   "routes": {
     "routesDir": "build",

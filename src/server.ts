@@ -7,7 +7,8 @@ import qs from 'koa-qs'
 import Router from '@koa/router'
 import { connectToDatabase } from './db'
 import { RegisterRoutes } from '../build/routes'
-import swagger from '../build/swagger.json'
+import fs from 'node:fs'
+import path from 'node:path'
 import { koaSwagger } from 'koa2-swagger-ui'
 
 export default function startServer(
@@ -27,7 +28,9 @@ export default function startServer(
 
   const docsRouter = new Router()
   docsRouter.get('/docs/spec', (ctx) => {
-    ctx.body = swagger
+    const specPath = path.join(process.cwd(), 'build', 'swagger.json')
+    ctx.type = 'application/json'
+    ctx.body = fs.readFileSync(specPath, 'utf8')
   })
   app.use(docsRouter.routes())
   app.use(docsRouter.allowedMethods())
