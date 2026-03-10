@@ -1,16 +1,22 @@
 {
   "name": "Node.js & TypeScript",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "dockerComposeFile": ["docker-compose.yml"],
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
   "service": "dev",
   "features": {
-    "ghcr.io/mcmastercce/bvd-103-mcmasterful-books/mcmasterful-books:latest": {}
+    "ghcr.io/mcmastercce/bvd-103-mcmasterful-books/mcmasterful-books:latest": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   // uncomment the line below if the repo is cloned to a local folder and opened as container
   // "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "customizations": {
     "vscode": {
-      "extensions": ["humao.rest-client", "rangav.vscode-thunder-client"],
+      "extensions": [
+        "humao.rest-client",
+        "rangav.vscode-thunder-client"
+      ],
       "settings": {
         "rest-client.previewResponseInUntitledDocument": true
       }
