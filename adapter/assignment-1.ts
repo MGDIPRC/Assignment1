@@ -20,15 +20,15 @@ async function listBooks(
 
       const from =
         typeof filter?.from === 'number' &&
-        Number.isFinite(filter.from) &&
-        filter.from >= 0
+          Number.isFinite(filter.from) &&
+          filter.from >= 0
           ? filter.from
           : undefined
 
       const to =
         typeof filter?.to === 'number' &&
-        Number.isFinite(filter.to) &&
-        filter.to >= 0
+          Number.isFinite(filter.to) &&
+          filter.to >= 0
           ? filter.to
           : undefined
 
@@ -43,8 +43,8 @@ async function listBooks(
 
   const queryString = queryParts.join('&')
   const url = queryString
-    ? `http://localhost:3000/books?${queryString}`
-    : 'http://localhost:3000/books'
+    ? `/api/books?${queryString}`
+    : '/api/books'
 
   let res: Response
   try {
