@@ -23,7 +23,7 @@ services:
       - ./:/app
     command: npx -y tsx ./index.ts
     environment:
-      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_URI: mongodb://mongo:27017/books
     depends_on:
       - mongo
 
@@ -34,7 +34,7 @@ services:
       - ./:/app
     command: npx -y tsx ./index.ts
     environment:
-      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_URI: mongodb://mongo:27017/books
     depends_on:
       - mongo
 
@@ -45,7 +45,7 @@ services:
       - ./:/app
     command: npx -y tsx ./index.ts
     environment:
-      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_URI: mongodb://mongo:27017/books
     depends_on:
       - mongo
 

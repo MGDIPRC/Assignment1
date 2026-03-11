@@ -61,15 +61,17 @@ async function getBookByIdOrThrow(id: BookID): Promise<Book> {
   throw new Error("I can't find a book with that ID")
 }
 
-async function listBooks(filters?: Filter[]): Promise<Book[]> {
-  const anyPrev = previous_assignment as any
 
-  const baseBooks: Book[] =
-    typeof anyPrev.listBooks === 'function'
-      ? ((await anyPrev.listBooks(filters)) as Book[])
-      : ((await (assignment2 as any).listBooks(
-          (filters ?? []).map((f: Filter) => ({ from: f.from, to: f.to })),
-        )) as Book[])
+async function listBooks(filters?: Filter[]): Promise<Book[]> {
+  const baseBooks: Book[] = await (assignment2 as any).listBooks(
+    (filters ?? []).map((f: Filter) => ({
+      from: f.from,
+      to: f.to,
+    })),
+  )
+
+
+
 
   // Add stock totals
   const withStock = await Promise.all(
