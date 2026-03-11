@@ -44,6 +44,11 @@ export class BooksRoute {
     return { id: updatedId }
   }
 
+  @Get()
+  public async listBooks(): Promise<unknown> {
+    return await assignment.listBooks()
+  }
+
   @Get('{id}')
   public async getBookById(@Path() id: string): Promise<unknown> {
     if (typeof id !== 'string' || id.trim() === '') {
