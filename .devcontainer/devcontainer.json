@@ -1,9 +1,7 @@
 {
   "name": "Node.js & TypeScript",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "dockerComposeFile": [
-    "docker-compose.yml"
-  ],
+  "dockerComposeFile": ["docker-compose.yml"],
   "service": "dev",
   "workspaceFolder": "/workspaces/assignment1",
   "features": {
@@ -14,10 +12,7 @@
   // "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "customizations": {
     "vscode": {
-      "extensions": [
-        "humao.rest-client",
-        "rangav.vscode-thunder-client"
-      ],
+      "extensions": ["humao.rest-client", "rangav.vscode-thunder-client"],
       "settings": {
         "rest-client.previewResponseInUntitledDocument": true
       }
