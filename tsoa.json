@@ -1,10 +1,13 @@
 {
   "entryFile": "src/server.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
-  "controllerPathGlobs": ["src/**/*.route.ts"],
+  "controllerPathGlobs": [
+    "src/**/*.route.ts"
+  ],
   "spec": {
     "outputDirectory": "build",
-    "specVersion": 3
+    "specVersion": 3,
+    "basePath": "/api"
   },
   "servers": {
     "url": "http://localhost:3000",

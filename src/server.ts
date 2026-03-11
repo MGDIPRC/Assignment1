@@ -38,7 +38,7 @@ export default function startServer(
   const swaggerMiddleware = koaSwagger({
     routePrefix: '/docs',
     swaggerOptions: {
-      url: '/docs/spec',
+      url: '/api/docs/spec',
     },
   }) as unknown as Middleware
   app.use(swaggerMiddleware)

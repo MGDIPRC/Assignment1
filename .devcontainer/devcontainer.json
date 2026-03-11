@@ -5,6 +5,7 @@
     "docker-compose.yml"
   ],
   "service": "dev",
+  "workspaceFolder": "/workspaces/assignment1",
   "features": {
     "ghcr.io/mcmastercce/bvd-103-mcmasterful-books/mcmasterful-books:latest": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
