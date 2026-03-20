@@ -1,15 +1,12 @@
 import type { Server } from 'http'
 import Koa from 'koa'
-import type { Middleware } from 'koa'
 import cors from '@koa/cors'
 import bodyParser from 'koa-bodyparser'
 import qs from 'koa-qs'
 import Router from '@koa/router'
 import { connectToDatabase } from './db'
 import { RegisterRoutes } from '../build/routes'
-import fs from 'node:fs'
-import path from 'node:path'
-import { koaSwagger } from 'koa2-swagger-ui'
+
 
 export default function startServer(
   port: number = 3000,
@@ -25,23 +22,6 @@ export default function startServer(
   RegisterRoutes(tsoaRouter)
   app.use(tsoaRouter.routes())
   app.use(tsoaRouter.allowedMethods())
-
-  const docsRouter = new Router()
-  docsRouter.get('/docs/spec', (ctx) => {
-    const specPath = path.join(process.cwd(), 'build', 'swagger.json')
-    ctx.type = 'application/json'
-    ctx.body = fs.readFileSync(specPath, 'utf8')
-  })
-  app.use(docsRouter.routes())
-  app.use(docsRouter.allowedMethods())
-
-  const swaggerMiddleware = koaSwagger({
-    routePrefix: '/docs',
-    swaggerOptions: {
-      url: '/api/docs/spec',
-    },
-  }) as unknown as Middleware
-  app.use(swaggerMiddleware)
 
   if (!testMode) {
     connectToDatabase()
