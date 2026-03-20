@@ -1,3 +1,3 @@
 import startServer from './src/server'
 
-startServer()
+startServer(3004)

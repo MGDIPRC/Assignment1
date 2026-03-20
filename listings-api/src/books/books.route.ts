@@ -1,5 +1,27 @@
-import assignment from '../../adapter/assignment-4'
 import { Body, Get, Path, Post, Put, Delete, Route, Tags } from 'tsoa'
+
+
+const booksStore = new Map<string, any>()
+let nextId = 1
+
+function createOrUpdateBook(book: any) {
+  const id = book.id ?? `book_${nextId++}`
+  booksStore.set(id, { ...book, id })
+  return id
+}
+
+function listBooks() {
+  return Array.from(booksStore.values())
+}
+
+function lookupBookById(id: string) {
+  return booksStore.get(id) ?? null
+}
+
+function removeBook(id: string) {
+  booksStore.delete(id)
+}
+
 
 interface BookPayload {
   name: string
@@ -37,7 +59,7 @@ export class BooksRoute {
       throw new Error('Invalid book payload')
     }
 
-    const updatedId = await assignment.createOrUpdateBook({
+    const updatedId = createOrUpdateBook({
       ...bookPayload,
       id,
     })
@@ -46,7 +68,7 @@ export class BooksRoute {
 
   @Get()
   public async listBooks(): Promise<unknown> {
-    return await assignment.listBooks()
+    return listBooks()
   }
 
   @Get('{id}')
@@ -55,7 +77,7 @@ export class BooksRoute {
       throw new Error('Missing book id')
     }
 
-    return await assignment.lookupBookById(id)
+    return lookupBookById(id)
   }
 
   @Post()
@@ -72,7 +94,7 @@ export class BooksRoute {
       throw new Error('Invalid book payload')
     }
 
-    const id = await assignment.createOrUpdateBook(book)
+    const id = createOrUpdateBook(book)
     return { id }
   }
 
@@ -82,6 +104,6 @@ export class BooksRoute {
       throw new Error('Missing book id')
     }
 
-    await assignment.removeBook(id)
+    removeBook(id)
   }
 }
