@@ -7,7 +7,7 @@ async function start() {
   await mongoose.connect('mongodb://localhost:27017/app')
 
   app.listen(port, () => {
-    console.log(`Warehouse API is running on port ${port}`)
+    console.log(`Orders API is running on port ${port}`)
   })
 }
 

@@ -1,11 +1,11 @@
 import Koa from "koa"
 import bodyParser from 'koa-bodyparser'
+import ordersRouter from './orders/orders.routes'
 
 const app = new Koa();
 
 app.use(bodyParser())
-app.use(async (ctx) => {
-  ctx.body = { message: 'orders api running' }
-})
+app.use(ordersRouter.routes())
+app.use(ordersRouter.allowedMethods())
 
-export default app;
+export default app
