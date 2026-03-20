@@ -1,14 +1,7 @@
-import mongoose from 'mongoose'
-import app from "./server";
+import app from './server'
 
-const port = process.env.PORT || 3001
+const port = process.env.PORT || 3003
 
-async function start() {
-  await mongoose.connect('mongodb://localhost:27017/app')
-
-  app.listen(port, () => {
-    console.log(`Warehouse API is running on port ${port}`)
-  })
-}
-
-start()
+app.listen(port, () => {
+  console.log(`Docs API is running on port ${port}`)
+})

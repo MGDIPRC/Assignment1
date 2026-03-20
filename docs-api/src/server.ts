@@ -1,11 +1,37 @@
 import Koa from "koa"
-import bodyParser from 'koa-bodyparser'
-import warehouseRouter from './warehouse/warehouse.routes'
+import { koaSwagger } from "koa2-swagger-ui";
+import fs from 'fs'
+import path from 'path'
 
-const app = new Koa();
+const app = new Koa()
 
-app.use(bodyParser())
-app.use(warehouseRouter.routes())
-app.use(warehouseRouter.allowedMethods())
+const swaggerPath = path.join(
+  process.cwd(),
+  '..',
+  'listings-api',
+  'build',
+  'swagger.json'
+)
 
-export default app;
+console.log('Swagger path:', swaggerPath)
+
+const swaggerSpec = JSON.parse(fs.readFileSync(swaggerPath, 'utf-8'))
+
+app.use(async (ctx, next) => {
+  if (ctx.path === '/docs/spec') {
+    ctx.body = swaggerSpec
+  } else {
+    await next()
+  }
+})
+
+app.use(
+  koaSwagger({
+    routePrefix: '/docs',
+    swaggerOptions: {
+      spec: swaggerSpec,
+    },
+  }),
+)
+
+export default app
