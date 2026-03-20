@@ -1,7 +1,14 @@
+import mongoose from 'mongoose'
 import app from "./server";
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3001
 
-app.listen(port, () => {
-  console.log(`Warehouse API is running on port ${port}`);
-});
+async function start() {
+  await mongoose.connect('mongodb://localhost:27017/app')
+
+  app.listen(port, () => {
+    console.log(`Warehouse API is running on port ${port}`)
+  })
+}
+
+start()

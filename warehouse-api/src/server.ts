@@ -1,9 +1,11 @@
-import Koa from "koa";
+import Koa from "koa"
+import bodyParser from 'koa-bodyparser'
+import warehouseRouter from './warehouse/warehouse.routes'
 
 const app = new Koa();
 
-app.use(async (ctx) => {
-  ctx.body = { message: "warehouse api is running" };
-});
+app.use(bodyParser())
+app.use(warehouseRouter.routes())
+app.use(warehouseRouter.allowedMethods())
 
 export default app;
