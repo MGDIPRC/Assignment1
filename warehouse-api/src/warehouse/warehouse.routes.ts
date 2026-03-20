@@ -1,12 +1,14 @@
 import Router from '@koa/router'
 import type Koa from 'koa'
-import assignment from '../../adapter/assignment-4'
+import { DatabaseWarehouse } from './warehouse.database'
 
+
+const warehouse = new DatabaseWarehouse()
 const router = new Router()
 
 router.post('/warehouse/:bookId/shelves/:shelfId', async (ctx: Koa.Context) => {
   const { bookId, shelfId } = ctx.params
-  const body = ctx.request.body
+  const body = (ctx.request as any).body
 
   if (typeof bookId !== 'string' || bookId.trim() === '') {
     ctx.status = 400
@@ -31,7 +33,7 @@ router.post('/warehouse/:bookId/shelves/:shelfId', async (ctx: Koa.Context) => {
     return
   }
 
-  await assignment.placeBooksOnShelf(bookId, count, shelfId)
+  await warehouse.placeBookOnShelf(bookId, shelfId, count)
   ctx.status = 204
 })
 
@@ -44,7 +46,7 @@ router.get('/warehouse/:bookId', async (ctx: Koa.Context) => {
     return
   }
 
-  const shelves = await assignment.findBookOnShelf(bookId)
+  const shelves = await warehouse.getCopiesByShelf(bookId)
   ctx.status = 200
   ctx.body = shelves
 })

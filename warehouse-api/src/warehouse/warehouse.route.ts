@@ -1,5 +1,7 @@
-import assignment from '../../adapter/assignment-4'
 import { Body, Get, Path, Post, Route, SuccessResponse, Tags } from 'tsoa'
+import { DatabaseWarehouse } from './warehouse.database'
+
+const warehouse = new DatabaseWarehouse()
 
 export interface ShelfCountPayload {
   count: number
@@ -29,7 +31,7 @@ export class WarehouseRoute {
       throw new Error('Missing or invalid count')
     }
 
-    await assignment.placeBooksOnShelf(bookId, count, shelfId)
+    await warehouse.placeBookOnShelf(bookId, shelfId, count)
   }
 
   @Get('{bookId}')
@@ -38,7 +40,7 @@ export class WarehouseRoute {
       throw new Error('Missing book id')
     }
 
-    const shelves = await assignment.findBookOnShelf(bookId)
+    const shelves = await warehouse.getCopiesByShelf(bookId)
     return shelves
   }
 }
