@@ -1,5 +1,6 @@
 import { Body, Get, Path, Post, Route, SuccessResponse, Tags } from 'tsoa'
 import { createOrdersMemory } from './orders.memory'
+import { sendOrderMessage } from '../rabbit'
 
 const orders = createOrdersMemory()
 
@@ -64,7 +65,16 @@ export class OrdersRoute {
       items: books.map((b) => ({ bookId: b, qty: 1 })),
     })
 
+    console.log('ORDER ROUTE HIT')
+
+    await sendOrderMessage({
+      type: 'ORDER_CREATED',
+      orderId: result.id,
+      books,
+    })
+
     return { orderId: result.id }
+
   }
 
   @Get()

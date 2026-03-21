@@ -1,6 +1,7 @@
 import Router from '@koa/router'
 import type Koa from 'koa'
 import { createOrdersMemory } from './orders.memory'
+import { sendOrderMessage } from '../rabbit'
 
 const orders = createOrdersMemory()
 const router = new Router()
@@ -47,6 +48,13 @@ router.post('/orders', async (ctx: Koa.Context) => {
   const result = await orders.createOrder({
     items: books.map((b) => ({ bookId: b, qty: 1 }))
   })
+
+  await sendOrderMessage({
+    type: 'ORDER_CREATED',
+    orderId: result.id,
+    books
+  })
+
   ctx.body = { orderId: result.id }
 })
 
