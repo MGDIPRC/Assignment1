@@ -20,27 +20,34 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: listings-api
 
       - name: Generate tsoa routes + OpenAPI client
         run: |
           npx tsoa spec-and-routes
           ./generate-openapi.sh
+        working-directory: listings-api
 
       - name: Run unit tests
         run: npm run test:unit
+        working-directory: listings-api
         env:
           MONGOMS_DOWNLOAD_DIR: ${{ runner.temp }}/mongodb-binaries
 
       - name: Run api tests
         run: npm run test:api
+        working-directory: listings-api
         env:
           MONGOMS_DOWNLOAD_DIR: ${{ runner.temp }}/mongodb-binaries
 
       - name: Lint
         run: npm run lint
+        working-directory: listings-api
 
       - name: Format check
         run: npm run fmt:check
+        working-directory: listings-api
 
       - name: Typecheck
         run: npm run typecheck
+        working-directory: listings-api
