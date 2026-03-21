@@ -26,6 +26,7 @@ jobs:
         run: |
           npx tsoa spec-and-routes
           ./generate-openapi.sh
+          npx prettier . --write
         working-directory: listings-api
 
       - name: Run unit tests
