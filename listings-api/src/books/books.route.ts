@@ -1,27 +1,25 @@
 import { Body, Get, Path, Post, Put, Delete, Route, Tags } from 'tsoa'
 
-
-const booksStore = new Map<string, any>()
+const booksStore = new Map<string, unknown>()
 let nextId = 1
 
-function createOrUpdateBook(book: any) {
-  const id = book.id ?? `book_${nextId++}`
+function createOrUpdateBook(book: any): string {
+  const id: string = (book.id as string) ?? `book_${nextId++}`
   booksStore.set(id, { ...book, id })
   return id
 }
 
-function listBooks() {
+function listBooks(): unknown[] {
   return Array.from(booksStore.values())
 }
 
-function lookupBookById(id: string) {
+function lookupBookById(id: string): unknown | null {
   return booksStore.get(id) ?? null
 }
 
-function removeBook(id: string) {
+function removeBook(id: string): void {
   booksStore.delete(id)
 }
-
 
 interface BookPayload {
   name: string
@@ -67,7 +65,7 @@ export class BooksRoute {
   }
 
   @Get()
-  public async listBooks(): Promise<unknown> {
+  public async listBooks(): Promise<unknown[]> {
     return listBooks()
   }
 
@@ -77,7 +75,13 @@ export class BooksRoute {
       throw new Error('Missing book id')
     }
 
-    return lookupBookById(id)
+    const book = lookupBookById(id)
+
+    if (book === null) {
+      throw new Error('Book not found')
+    }
+
+    return book
   }
 
   @Post()

@@ -23,7 +23,8 @@ export default function startServer(
   RegisterRoutes(tsoaRouter)
   app.use(async (ctx, next) => {
     if (ctx.path.startsWith('/api')) {
-      ctx.path = ctx.path.replace('/api', '') || '/'
+      const newPath = ctx.path.replace('/api', '')
+      ctx.path = newPath === '' ? '/' : newPath
     }
     await next()
   })

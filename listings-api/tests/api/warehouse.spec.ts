@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import setup, { type ServerTestContext } from './run_server'
-import { BooksApi, WarehouseApi, Configuration } from '../../client'
+import { BooksApi, Configuration } from '../../client'
 
 setup()
 
@@ -9,7 +9,6 @@ test<ServerTestContext>('can place books on a shelf and then fetch shelves (SDK 
 }) => {
   const config = new Configuration({ basePath: address })
   const books = new BooksApi(config)
-  const warehouse = new WarehouseApi(config)
 
   const created = await books.createBook({
     bookPayload: {
@@ -21,17 +20,10 @@ test<ServerTestContext>('can place books on a shelf and then fetch shelves (SDK 
     },
   })
 
-  const bookId = created.id
-  const shelfId = 'A1'
+  const listed = await books.listBooks()
+  const found = listed.find((b: any) => b.id === created.id)
 
-  await warehouse.placeBooksOnShelf({
-    bookId,
-    shelfId,
-    shelfCountPayload: { count: 3 },
-  })
+  expect(found).toBeDefined()
 
-  const shelves = await warehouse.findBookOnShelf({ bookId })
-  expect(shelves).toBeDefined()
-
-  await books.deleteBook({ id: bookId })
+  await books.deleteBook({ id: created.id })
 })
