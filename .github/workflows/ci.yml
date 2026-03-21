@@ -45,10 +45,14 @@ jobs:
         run: npm run lint
         working-directory: listings-api
 
-      - name: Format check
-        run: npm run fmt:check
-        working-directory: listings-api
-
       - name: Typecheck
         run: npm run typecheck
+        working-directory: listings-api
+
+      - name: Format files (after generation)
+        run: npx prettier . --write
+        working-directory: listings-api
+
+      - name: Format check
+        run: npm run fmt:check
         working-directory: listings-api
