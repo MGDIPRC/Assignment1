@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import app from './server'
+import { startConsumer } from './rabbit'
 
 const port = process.env.PORT || 3000
 
@@ -10,6 +11,8 @@ async function start() {
   } catch (err) {
     console.warn('Database connection failed, continuing without DB')
   }
+
+  startConsumer()
 
   app.listen(port, () => {
     console.log(`Warehouse API is running on port ${port}`)
