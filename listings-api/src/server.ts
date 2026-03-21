@@ -6,7 +6,8 @@ import qs from 'koa-qs'
 import Router from '@koa/router'
 import { connectToDatabase } from './db'
 import { RegisterRoutes } from '../build/routes'
-
+import fs from 'node:fs'
+import path from 'node:path'
 
 export default function startServer(
   port: number = 3000,
@@ -20,8 +21,26 @@ export default function startServer(
 
   const tsoaRouter = new Router()
   RegisterRoutes(tsoaRouter)
+  app.use(async (ctx, next) => {
+    if (ctx.path.startsWith('/api')) {
+      ctx.path = ctx.path.replace('/api', '') || '/'
+    }
+    await next()
+  })
+
   app.use(tsoaRouter.routes())
   app.use(tsoaRouter.allowedMethods())
+
+  const docsRouter = new Router()
+
+  docsRouter.get('/docs/spec', (ctx) => {
+    const specPath = path.join(process.cwd(), 'build', 'swagger.json')
+    ctx.type = 'application/json'
+    ctx.body = fs.readFileSync(specPath, 'utf8')
+  })
+
+  app.use(docsRouter.routes())
+  app.use(docsRouter.allowedMethods())
 
   if (!testMode) {
     connectToDatabase()
