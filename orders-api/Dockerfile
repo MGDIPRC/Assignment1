@@ -9,5 +9,5 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:docker"]
+CMD ["npx", "tsx", "src/start.ts"]
 
