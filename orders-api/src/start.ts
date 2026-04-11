@@ -5,7 +5,7 @@ const port = process.env.PORT || 3000
 
 async function start() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/app')
+    await mongoose.connect(process.env.MONGO_URI as string)
     console.log('Database connected')
   } catch (err) {
     console.warn('Database connection failed, continuing without DB')

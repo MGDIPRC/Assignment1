@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start-server": "npx tsx ./index.ts",
+    "start:docker": "npx tsoa spec-and-routes && npx tsx ./index.ts",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "fmt": "prettier . --write",

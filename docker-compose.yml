@@ -3,24 +3,72 @@ services:
     build: ./listings-api
     ports:
       - "3004:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo-listings:27017/listings
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo-listings
+      - rabbitmq
 
   orders:
     build: ./orders-api
     ports:
       - "3002:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo-orders:27017/orders
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo-orders
+      - rabbitmq
 
   warehouse:
     build: ./warehouse-api
     ports:
       - "3001:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo-warehouse:27017/warehouse
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo-warehouse
+      - rabbitmq
 
   docs:
     build: ./docs-api
     ports:
       - "3003:3000"
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "9080:80"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - listings
+      - orders
+      - warehouse
+      - docs
+      - frontend
+
   rabbitmq:
     image: rabbitmq:3-management
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  mongo-listings:
+    image: mongo
+
+  mongo-orders:
+    image: mongo
+
+  mongo-warehouse:
+    image: mongo
