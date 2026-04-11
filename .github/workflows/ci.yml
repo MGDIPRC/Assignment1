@@ -77,32 +77,32 @@ jobs:
         with:
           context: ./listings-api
           push: true
-          tags: ghcr.io/mgdiprc/listings-api:latest
+          tags: ghcr.io/${{ github.actor }}/listings-api:latest
 
       - name: Build and push orders-api
         uses: docker/build-push-action@v5
         with:
           context: ./orders-api
           push: true
-          tags: ghcr.io/mgdiprc/orders-api:latest
+          tags: ghcr.io/${{ github.actor }}/orders-api:latest
 
       - name: Build and push warehouse-api
         uses: docker/build-push-action@v5
         with:
           context: ./warehouse-api
           push: true
-          tags: ghcr.io/mgdiprc/warehouse-api:latest
+          tags: ghcr.io/${{ github.actor }}/warehouse-api:latest
 
       - name: Build and push docs-api
         uses: docker/build-push-action@v5
         with:
           context: ./docs-api
           push: true
-          tags: ghcr.io/mgdiprc/docs-api:latest
+          tags: ghcr.io/${{ github.actor }}/docs-api:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
-          tags: ghcr.io/mgdiprc/frontend:latest
+          tags: ghcr.io/${{ github.actor }}/frontend:latest
