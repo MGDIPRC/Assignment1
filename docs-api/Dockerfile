@@ -7,7 +7,9 @@ RUN npm install
 
 COPY . .
 
+RUN npx tsoa spec-and-routes
+
 EXPOSE 3000
 
-CMD ["npm", "run", "start-server"]
+CMD ["npx", "tsx", "src/start.ts"]
 
