@@ -56,3 +56,53 @@ jobs:
       - name: Format check
         run: npm run fmt:check
         working-directory: listings-api
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: ci
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push listings-api
+        uses: docker/build-push-action@v5
+        with:
+          context: ./listings-api
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/listings-api:latest
+
+      - name: Build and push orders-api
+        uses: docker/build-push-action@v5
+        with:
+          context: ./orders-api
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/orders-api:latest
+
+      - name: Build and push warehouse-api
+        uses: docker/build-push-action@v5
+        with:
+          context: ./warehouse-api
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/warehouse-api:latest
+
+      - name: Build and push docs-api
+        uses: docker/build-push-action@v5
+        with:
+          context: ./docs-api
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/docs-api:latest
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/frontend:latest
