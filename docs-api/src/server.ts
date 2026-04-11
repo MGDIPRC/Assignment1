@@ -7,7 +7,7 @@ app.use(
   koaSwagger({
     routePrefix: '/docs',
     swaggerOptions: {
-      url: '/docs/spec',
+      url: 'http://listings:3000/docs/spec',
     },
   }),
 )
