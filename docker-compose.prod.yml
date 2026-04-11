@@ -1,0 +1,74 @@
+services:
+  listings:
+    image: ghcr.io/mgdiprc/listings-api:latest
+    ports:
+      - "3004:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo-listings:27017/listings
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo-listings
+      - rabbitmq
+
+  orders:
+    image: ghcr.io/mgdiprc/orders-api:latest
+    ports:
+      - "3002:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo-orders:27017/orders
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo-orders
+      - rabbitmq
+
+  warehouse:
+    image: ghcr.io/mgdiprc/warehouse-api:latest
+    ports:
+      - "3001:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo-warehouse:27017/warehouse
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo-warehouse
+      - rabbitmq
+
+  docs:
+    image: ghcr.io/mgdiprc/docs-api:latest
+    ports:
+      - "3003:3000"
+
+  frontend:
+    image: ghcr.io/mgdiprc/frontend:latest
+    ports:
+      - "9080:80"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - listings
+      - orders
+      - warehouse
+      - docs
+      - frontend
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  mongo-listings:
+    image: mongo
+
+  mongo-orders:
+    image: mongo
+
+  mongo-warehouse:
+    image: mongo
