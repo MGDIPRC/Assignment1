@@ -8,8 +8,6 @@ RUN npm install
 
 COPY . .
 
-RUN npx tsoa spec-and-routes
-
 EXPOSE 3000
 
 CMD ["npx", "tsx", "index.ts"]
