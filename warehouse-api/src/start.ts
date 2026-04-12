@@ -21,7 +21,7 @@ async function connectRabbitWithRetry() {
 
 async function start() {
   try {
-    await mongoose.connect(process.env.MONGO_URI as string)
+    await mongoose.connect(process.env.MONGODB_URI as string)
     console.log('Database connected')
   } catch (err) {
     console.warn('Database connection failed, continuing without DB')
